@@ -1,13 +1,13 @@
-package com.rpg.RPGWORLD;
+package com.rpg.rpgworld;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RpgworldApplication {
+public class RpgWorldApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RpgworldApplication.class, args);
+		SpringApplication.run(RpgWorldApplication.class, args);
 	}
 
 }
