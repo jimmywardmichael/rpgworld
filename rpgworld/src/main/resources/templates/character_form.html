@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Create Character</title>
 </head>
 <body>
+<div class="btn-game" role="group" aria-label="Switch between menu's">
+    <a href="/" type="button" class="btn btn-primary">Main Menu</a>
+    <a href="/characters" type="button" class="btn btn-primary">Saved Characters</a>
+    <a href="/character_form" type="button" class="btn btn-primary">Character Creation</a>
+</div>
 <h1>Create New Character</h1>
 <form th:action="@{/characters}" th:object="${character}" method="post">
     <label>Name:</label>
@@ -16,6 +21,6 @@
     <input type="number" th:field="*{defense}" /><br/>
     <button type="submit">Create</button>
 </form>
+<script src="/js/home.js"></script>
 </body>
-</html>
 </html>
