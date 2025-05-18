@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>New Character</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Create Character</title>
 </head>
-<body class="container mt-5">
-<h1>Create Character</h1>
+<body>
+<h1>Create New Character</h1>
 <form th:action="@{/characters}" th:object="${character}" method="post">
-    <div class="mb-3">
-        <label>Name</label>
-        <input type="text" class="form-control" th:field="*{name}" required/>
-    </div>
-    <div class="mb-3">
-        <label>Health</label>
-        <input type="number" class="form-control" th:field="*{health}" required/>
-    </div>
-    <div class="mb-3">
-        <label>Attack</label>
-        <input type="number" class="form-control" th:field="*{attack}" required/>
-    </div>
-    <div class="mb-3">
-        <label>Defense</label>
-        <input type="number" class="form-control" th:field="*{defense}" required/>
-    </div>
-    <button type="submit" class="btn btn-success">Save</button>
+    <label>Name:</label>
+    <input type="text" th:field="*{name}" /><br/>
+    <label>Health:</label>
+    <input type="number" th:field="*{health}" /><br/>
+    <label>Attack:</label>
+    <input type="number" th:field="*{attack}" /><br/>
+    <label>Defense:</label>
+    <input type="number" th:field="*{defense}" /><br/>
+    <button type="submit">Create</button>
 </form>
 </body>
+</html>
 </html>

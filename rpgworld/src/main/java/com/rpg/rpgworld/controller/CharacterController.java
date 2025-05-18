@@ -1,46 +1,36 @@
 package com.rpg.rpgworld.controller;
 
-
-import com.rpg.rpgworld.repository.CharacterRepository;
+import com.rpg.rpgworld.model.GameCharacter;
+import com.rpg.rpgworld.service.CharacterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.rpg.rpgworld.model.Character;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/characters")
 public class CharacterController {
 
-    private final CharacterRepository repo;
+    private final CharacterService service;
 
-    public CharacterController(CharacterRepository repo) {
-        this.repo = repo;
+    public CharacterController(CharacterService service) {
+        this.service = service;
     }
 
     @GetMapping
     public String listCharacters(Model model) {
-        List<Character> characters = repo.findAll();
-        model.addAttribute("characters", characters);
+        model.addAttribute("characters", service.getAllCharacters());
         return "characters";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("character", new Character());
+        model.addAttribute("character", new GameCharacter());
         return "character_form";
     }
 
     @PostMapping
-    public String createCharacter(@ModelAttribute Character character) {
-        repo.save(character);
-        return "redirect:/characters";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteCharacter(@PathVariable Long id) {
-        repo.deleteById(id);
+    public String createCharacter(@ModelAttribute GameCharacter character) {
+        service.saveCharacter(character);
         return "redirect:/characters";
     }
 }
