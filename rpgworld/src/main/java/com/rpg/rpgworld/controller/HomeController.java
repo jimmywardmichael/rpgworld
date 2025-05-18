@@ -25,6 +25,6 @@ public class HomeController {
     @PostMapping("/deleteCharacter/{id}")
     public String deleteCharacter(@PathVariable Long id) {
         characterRepository.deleteById(id);
-        return "redirect:/characters"; // return to character list after deletion
+        return "redirect:/characters"; // redirecting instead of just /characters so it shows updated list after deletion
     }
 }

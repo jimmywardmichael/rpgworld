@@ -25,11 +25,11 @@ public class CharacterController {
         return "characters";
     }
 
-    @GetMapping("/character_form")
-    public String showCharacterForm(Model model) {
-        model.addAttribute("character", new GameCharacter());
-        return "character_form";
-    }
+//    @GetMapping("/character_form")
+//    public String showCharacterForm(Model model) {
+//        model.addAttribute("character", new GameCharacter());
+//        return "character_form";
+//    }
 
     @GetMapping
     public String listCharacters(Model model) {
@@ -37,7 +37,7 @@ public class CharacterController {
         return "characters";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/character_form")
     public String showCreateForm(Model model) {
         model.addAttribute("character", new GameCharacter());
         return "character_form";
@@ -46,6 +46,6 @@ public class CharacterController {
     @PostMapping
     public String createCharacter(@ModelAttribute GameCharacter character) {
         service.saveCharacter(character);
-        return "/characters";
+        return "redirect:/characters";
     }
 }
