@@ -19,7 +19,8 @@
         <th>Health</th>
         <th>Attack</th>
         <th>Defense</th>
-        <th>Action</th>
+        <th>Level</th>
+        <th>Skills</th>
     </tr>
     <tr th:each="character : ${characters}">
         <td th:text="${character.id}"></td>
@@ -27,6 +28,8 @@
         <td th:text="${character.health}"></td>
         <td th:text="${character.attack}"></td>
         <td th:text="${character.defense}"></td>
+        <td th:text="${character.level}"></td>
+        <td th:text="${character.skills}"></td>
         <td>
             <form th:action="@{'/deleteCharacter/' + ${character.id}}" method="post"
                   onsubmit="return confirm('Are you sure you want to delete this character?');">

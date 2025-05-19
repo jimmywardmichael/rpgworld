@@ -13,6 +13,8 @@ public class GameCharacter {
     private int health;
     private int attack;
     private int defense;
+    private int level;
+    private String skills;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -29,5 +31,22 @@ public class GameCharacter {
 
     public int getDefense() { return defense; }
     public void setDefense(int defense) { this.defense = defense; }
+
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
 }
 

@@ -25,11 +25,6 @@ public class CharacterController {
         return "characters";
     }
 
-//    @GetMapping("/character_form")
-//    public String showCharacterForm(Model model) {
-//        model.addAttribute("character", new GameCharacter());
-//        return "character_form";
-//    }
 
     @GetMapping
     public String listCharacters(Model model) {
