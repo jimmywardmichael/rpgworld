@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>RPG World - Store</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <style>
+        html, body { margin: 0; height: 100%; overflow: hidden; }
+        #hud { position: absolute; top: 10px; left: 10px; z-index: 10; color: #fff; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; }
+        .btns { position: absolute; top: 10px; right: 10px; z-index: 10; }
+        .btns a { color: #fff; background: rgba(0,0,0,0.6); padding: 8px 12px; margin-left: 6px; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div id="hud">Store: Click an item to buy (demo). Press M to return to Map.</div>
+<div class="btns">
+    <a href="/play/map">Back to Map</a>
+    <a href="/">Menu</a>
+</div>
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="/js/store.js"></script>
+</body>
+</html>

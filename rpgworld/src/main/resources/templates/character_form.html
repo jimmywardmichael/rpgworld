@@ -21,11 +21,86 @@
     <label>Defense:</label>
     <input type="number" th:field="*{defense}" /><br/>
     <label>Level:</label>
-    <input type="number" th:field="*{level}" /><br/>
+    <input type="number" th:field="*{level}" value="1" min="1" /><br/>
+
+    <!-- Attribute allocation (300 points across Health, Attack, Defense, Magic) -->
+    <div style="margin:8px 0; padding:8px; background:#222; color:#fff; border-radius:8px;">
+        <div><strong>Allocate Attribute Points</strong> — Points remaining: <span id="ptsLeft">300</span></div>
+    </div>
+
+    <label>Magic:</label>
+    <input type="number" th:field="*{magic}" value="0" min="0" /><br/>
+    <label>Mana:</label>
+    <input type="number" th:field="*{mana}" value="100" min="0" /><br/>
+
     <label>Skills:</label>
     <input type="text" th:field="*{skills}"  /><br/>
-    <button type="submit">Create</button>
+
+    <label>Gold:</label>
+    <input type="number" th:field="*{gold}" value="100" /><br/>
+    <label>Armor (rating):</label>
+    <input type="number" th:field="*{armor}" value="0" /><br/>
+    <label>Weapon:</label>
+    <select th:field="*{weapon}">
+        <option value="Sword">Sword</option>
+        <option value="Mace">Mace</option>
+        <option value="Axe">Axe</option>
+        <option value="Scythe">Scythe</option>
+    </select><br/>
+
+    <!-- Appearance customization -->
+    <fieldset style="margin-top:10px;">
+        <legend>Appearance</legend>
+        <label>Skin Color:</label>
+        <input type="color" th:field="*{skinColor}" value="#ffddaa" />
+        <label>Face:</label>
+        <select th:field="*{faceType}">
+            <option value="neutral">Neutral</option>
+            <option value="smile">Smile</option>
+            <option value="angry">Angry</option>
+        </select>
+        <br/>
+        <label>Shirt Color:</label>
+        <input type="color" th:field="*{shirtColor}" value="#3366ff" />
+        <label>Pants Color:</label>
+        <input type="color" th:field="*{pantsColor}" value="#333333" />
+    </fieldset>
+
+    <button type="submit" style="margin-top:10px;">Create</button>
 </form>
+<div id="preview3d" style="width:100%; height:400px; border:1px solid #444; margin-top:12px;"></div>
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="/js/character_preview.js"></script>
+<script>
+(function(){
+  const limit = 300;
+  const leftEl = document.getElementById('ptsLeft');
+  function el(name){ return document.querySelector('[name="'+name+'"]'); }
+  const fields = ['health','attack','defense','magic'];
+  function clamp(){
+    let sum = 0;
+    fields.forEach(n=>{ const v = parseInt(el(n)?.value||'0',10); if(!isNaN(v)) sum += v; });
+    const left = Math.max(0, limit - sum);
+    leftEl.textContent = String(left);
+    if(sum > limit){
+      // Reduce the last edited field to fit within the limit
+      document.activeElement && (function(){
+        const n = document.activeElement.getAttribute('name');
+        if(fields.includes(n)){
+          const over = sum - limit;
+          const cur = parseInt(document.activeElement.value||'0',10);
+          document.activeElement.value = Math.max(0, cur - over);
+        }
+      })();
+      // recalc
+      let sum2=0; fields.forEach(n=>{ const v=parseInt(el(n)?.value||'0',10); if(!isNaN(v)) sum2+=v; });
+      leftEl.textContent = String(Math.max(0, limit - sum2));
+    }
+  }
+  fields.forEach(n=>{ const e=el(n); if(e){ e.addEventListener('input', clamp); }});
+  clamp();
+})();
+</script>
 <script src="/js/home.js"></script>
 </body>
 </html>

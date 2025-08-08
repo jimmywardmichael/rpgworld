@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>RPG World - 3D Map</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <style>
+        html, body { margin: 0; height: 100%; overflow: hidden; }
+        #hud { position: absolute; top: 10px; left: 10px; z-index: 10; color: #fff; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; }
+        canvas { display: block; }
+        .btns { position: absolute; top: 10px; right: 10px; z-index: 10; }
+        .btns a { color: #fff; background: rgba(0,0,0,0.6); padding: 8px 12px; margin-left: 6px; border-radius: 4px; text-decoration: none; }
+        #charHud { position: absolute; right: 10px; bottom: 10px; z-index: 10; color: #fff; background: rgba(0,0,0,0.5); padding: 10px 12px; border-radius: 8px; min-width: 220px; }
+        #charHud h4 { margin: 0 0 6px 0; font-size: 14px; }
+        #actions { position: absolute; left: 50%; transform: translateX(-50%); bottom: 15px; z-index: 11; display: flex; gap: 8px; }
+        #actions button { background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        #actions button:hover { background: rgba(0,0,0,0.75); }
+        #deathOverlay { position: fixed; inset: 0; background: radial-gradient(rgba(100,0,0,0.2), rgba(120,0,0,0.6)); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 999; }
+        #deathOverlay h1 { color: #fff; text-shadow: 2px 2px 4px #000; margin-bottom: 12px; }
+        #deathOverlay .btns2 button { margin: 0 8px; padding: 10px 16px; border-radius: 6px; border: 1px solid #ccc; background: #222; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div id="hud">Click canvas to lock mouse • WASD/Arrows to move • Shift sprint • Space jump • Left click: Attack • Right click: Block</div>
+<div class="btns">
+    <a href="/">Menu</a>
+    <a href="/characters">Characters</a>
+</div>
+<div id="actions">
+    <button id="attackBtn">Attack</button>
+    <button id="blockBtn">Block</button>
+</div>
+<div id="charHud">
+    <h4>Character</h4>
+    <div>Name: <span id="hudName">-</span></div>
+    <div>Health: <span id="hudHealth">-</span></div>
+    <div>Armor: <span id="hudArmor">-</span></div>
+    <div>Weapon: <span id="hudWeapon">-</span></div>
+    <div>Gold: <span id="hudGold">-</span></div>
+</div>
+<div id="deathOverlay">
+    <h1>You Have Died</h1>
+    <div class="btns2">
+        <button onclick="location.reload()">Restart Level</button>
+        <button onclick="window.location.href='/'">Quit to Main Menu</button>
+    </div>
+</div>
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="/js/map.js"></script>
+</body>
+</html>

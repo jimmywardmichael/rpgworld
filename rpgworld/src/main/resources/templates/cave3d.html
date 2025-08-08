@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>RPG World - Cave</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <style>
+        html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+        #hud { position: absolute; top: 10px; left: 10px; z-index: 10; color: #0f0; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; }
+        .btns { position: absolute; top: 10px; right: 10px; z-index: 10; }
+        .btns a { color: #fff; background: rgba(0,0,0,0.6); padding: 8px 12px; margin-left: 6px; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div id="hud">Cave: Click canvas to lock mouse • WASD/Arrows to move • Shift sprint • Space jump • Press M to return to Map.</div>
+<div class="btns">
+    <a href="/play/map">Back to Map</a>
+    <a href="/">Menu</a>
+</div>
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="/js/cave.js"></script>
+</body>
+</html>
