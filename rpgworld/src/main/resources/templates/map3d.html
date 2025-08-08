@@ -10,7 +10,7 @@
         canvas { display: block; }
         .btns { position: absolute; top: 10px; right: 10px; z-index: 10; }
         .btns a { color: #fff; background: rgba(0,0,0,0.6); padding: 8px 12px; margin-left: 6px; border-radius: 4px; text-decoration: none; }
-        #charHud { position: absolute; right: 10px; bottom: 10px; z-index: 10; color: #fff; background: rgba(0,0,0,0.5); padding: 10px 12px; border-radius: 8px; min-width: 220px; }
+        #charHud { position: absolute; right: 10px; bottom: 10px; z-index: 10; color: #fff; background: rgba(0,0,0,0.5); padding: 10px 12px; border-radius: 8px; min-width: 240px; }
         #charHud h4 { margin: 0 0 6px 0; font-size: 14px; }
         #actions { position: absolute; left: 50%; transform: translateX(-50%); bottom: 15px; z-index: 11; display: flex; gap: 8px; }
         #actions button { background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
@@ -18,13 +18,26 @@
         #deathOverlay { position: fixed; inset: 0; background: radial-gradient(rgba(100,0,0,0.2), rgba(120,0,0,0.6)); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 999; }
         #deathOverlay h1 { color: #fff; text-shadow: 2px 2px 4px #000; margin-bottom: 12px; }
         #deathOverlay .btns2 button { margin: 0 8px; padding: 10px 16px; border-radius: 6px; border: 1px solid #ccc; background: #222; color: #fff; cursor: pointer; }
+        /* Store overlay */
+        #storeOverlay { position: absolute; right: 10px; top: 60px; z-index: 20; display: none; background: rgba(0,0,0,0.7); color:#fff; border:1px solid #555; border-radius:8px; padding:10px; min-width:260px; }
+        #storeOverlay h4 { margin: 0 0 6px 0; }
+        #storeOverlay .item { display:flex; justify-content:space-between; padding:6px; border-bottom:1px solid rgba(255,255,255,0.1); cursor:pointer; }
+        #storeOverlay .item:hover { background: rgba(255,255,255,0.08); }
+        #prompt { position:absolute; bottom: 60px; left:50%; transform:translateX(-50%); background: rgba(0,0,0,0.6); color:#fff; padding:6px 10px; border-radius:6px; z-index: 12; display:none; }
+        #npcSpeech { position:absolute; top: 60px; left:50%; transform:translateX(-50%); background: rgba(0,0,0,0.75); color:#fff; padding:10px 14px; border-radius:8px; z-index: 21; display:none; border:1px solid #555; }
+        #toast { position:absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.75); color:#fff; padding:8px 12px; border-radius:6px; z-index: 21; display:none; border:1px solid #555; }
+        /* Hotbar */
+        #hotbar { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:13; display:flex; gap:6px; background:rgba(0,0,0,0.35); padding:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);} 
+        #hotbar .slot { width:48px; height:48px; border:2px solid rgba(255,255,255,0.25); border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; cursor:pointer; }
+        #hotbar .slot.sel { border-color:#ffd54f; box-shadow:0 0 6px #ffd54f; }
     </style>
 </head>
 <body>
-<div id="hud">Click canvas to lock mouse • WASD/Arrows to move • Shift sprint • Space jump • Left click: Attack • Right click: Block</div>
+<div id="hud">Click canvas to lock mouse • WASD/Arrows to move • Shift sprint • Space jump • Left click: Attack • Right click: Block • Press Enter near Clerk to open Store • Press E to close Store/leave areas</div>
 <div class="btns">
-    <a href="/">Menu</a>
-    <a href="/characters">Characters</a>
+    <a href="/characters">Saved Characters</a>
+    <a href="/characters/character_form">Create Character</a>
+    <button id="exitBtn" style="color:#fff; background: rgba(0,0,0,0.6); padding: 8px 12px; margin-left: 6px; border-radius: 4px; border:1px solid #888; cursor:pointer;">Exit Game</button>
 </div>
 <div id="actions">
     <button id="attackBtn">Attack</button>
@@ -33,11 +46,30 @@
 <div id="charHud">
     <h4>Character</h4>
     <div>Name: <span id="hudName">-</span></div>
-    <div>Health: <span id="hudHealth">-</span></div>
+    <div>Level: <span id="hudLevel">1</span> | XP: <span id="hudXp">0</span></div>
+    <div>Health: <span id="hudHealth">-</span> <span id="hudShield" style="color:#88cfff"></span></div>
+    <div>Mana: <span id="hudMana">-</span> | Spell: <span id="hudSpell">None</span></div>
     <div>Armor: <span id="hudArmor">-</span></div>
     <div>Weapon: <span id="hudWeapon">-</span></div>
     <div>Gold: <span id="hudGold">-</span></div>
 </div>
+<div id="storeOverlay">
+    <h4>Store</h4>
+    <div class="item" data-item="Potion" data-price="10"><span>Potion</span><span>10g</span></div>
+    <div class="item" data-item="Shield" data-price="30"><span>Shield</span><span>30g</span></div>
+    <div class="item" data-item="Armor" data-price="50"><span>Armor</span><span>50g</span></div>
+    <div class="item" data-item="Sword" data-price="40"><span>Sword</span><span>40g</span></div>
+    <div class="item" data-item="Mace" data-price="45"><span>Mace</span><span>45g</span></div>
+    <div class="item" data-item="Axe" data-price="45"><span>Axe</span><span>45g</span></div>
+    <div class="item" data-item="Scythe" data-price="55"><span>Scythe</span><span>55g</span></div>
+    <div class="item" data-item="Bow" data-price="50"><span>Bow</span><span>50g</span></div>
+    <div class="item" data-item="Staff" data-price="50"><span>Staff</span><span>50g</span></div>
+    <div style="text-align:right; margin-top:8px;"><button onclick="document.getElementById('storeOverlay').style.display='none'">Close</button></div>
+</div>
+<div id="hotbar"></div>
+<div id="prompt">Press E to interact</div>
+<div id="npcSpeech"></div>
+<div id="toast"></div>
 <div id="deathOverlay">
     <h1>You Have Died</h1>
     <div class="btns2">

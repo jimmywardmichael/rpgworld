@@ -15,7 +15,8 @@ public class GameCharacter {
     private int defense;
     private int magic;   // magic power
     private int mana;    // resource pool
-    private int level;
+    private int level = 1;
+    private int xp;      // experience points
     private String skills;
 
     // Inventory/Stats
@@ -28,6 +29,16 @@ public class GameCharacter {
     private String shirtColor;  // hex
     private String pantsColor;  // hex
     private String faceType;    // e.g., neutral, smile, angry
+    private String charClass;   // e.g., Wizard, Barbarian, Archer
+
+    // Simple inventory stored as CSV (e.g., "Sword,Axe,Potion")
+    @Column(length = 2000)
+    private String inventory;
+
+    // Magic: learned spells CSV and currently equipped spell
+    @Column(length = 1000)
+    private String spells;           // e.g., "Fireball,Heal"
+    private String equippedSpell;    // e.g., "Fireball"
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -54,6 +65,9 @@ public class GameCharacter {
     public int getLevel() { return level; }
     public void setLevel(int level) { this.level = level; }
 
+    public int getXp() { return xp; }
+    public void setXp(int xp) { this.xp = xp; }
+
     public String getSkills() { return skills; }
     public void setSkills(String skills) { this.skills = skills; }
 
@@ -70,12 +84,24 @@ public class GameCharacter {
     public void setSkinColor(String skinColor) { this.skinColor = skinColor; }
 
     public String getShirtColor() { return shirtColor; }
-    public void setShirtColor(String shirtColor) { this.shirtColor = shirtColor; }
+    public void setShirtColor(String shirtColor) { this.shirtColor = this.shirtColor = shirtColor; }
 
     public String getPantsColor() { return pantsColor; }
     public void setPantsColor(String pantsColor) { this.pantsColor = pantsColor; }
 
     public String getFaceType() { return faceType; }
     public void setFaceType(String faceType) { this.faceType = faceType; }
+
+    public String getCharClass() { return charClass; }
+    public void setCharClass(String charClass) { this.charClass = charClass; }
+
+    public String getInventory() { return inventory; }
+    public void setInventory(String inventory) { this.inventory = inventory; }
+
+    public String getSpells() { return spells; }
+    public void setSpells(String spells) { this.spells = spells; }
+
+    public String getEquippedSpell() { return equippedSpell; }
+    public void setEquippedSpell(String equippedSpell) { this.equippedSpell = equippedSpell; }
 }
 

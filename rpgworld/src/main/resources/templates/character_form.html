@@ -5,8 +5,7 @@
     <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
-<div class="btn-game" role="group" aria-label="Switch between menu's">
-    <a href="/" type="button" class="btn btn-primary">Main Menu</a>
+<div class="btn-game" role="group" aria-label="Switch between screens">
     <a href="/characters" type="button" class="btn btn-primary">Saved Characters</a>
     <a th:href="@{/characters/character_form}" type="button" class="btn btn-primary">Character Creation</a>
 </div>
@@ -14,38 +13,79 @@
 <form th:action="@{/characters}" th:object="${character}" method="post">
     <label>Name:</label>
     <input type="text" th:field="*{name}" /><br/>
-    <label>Health:</label>
-    <input type="number" th:field="*{health}" /><br/>
-    <label>Attack:</label>
-    <input type="number" th:field="*{attack}" /><br/>
-    <label>Defense:</label>
-    <input type="number" th:field="*{defense}" /><br/>
-    <label>Level:</label>
-    <input type="number" th:field="*{level}" value="1" min="1" /><br/>
-
-    <!-- Attribute allocation (300 points across Health, Attack, Defense, Magic) -->
+    <!-- Attribute allocation (270 points across Health, Attack, Defense, Magic). Defaults: 50 each. -->
     <div style="margin:8px 0; padding:8px; background:#222; color:#fff; border-radius:8px;">
-        <div><strong>Allocate Attribute Points</strong> — Points remaining: <span id="ptsLeft">300</span></div>
+        <div><strong>Allocate Attribute Points</strong> — Points remaining: <span id="ptsLeft">70</span></div>
+        <div style="margin-top:8px;">
+            <label>Health: <span id="val_health">50</span></label><br/>
+            <input type="range" name="health" min="0" max="270" value="50" step="1" style="width:100%"/>
+        </div>
+        <div style="margin-top:8px;">
+            <label>Attack: <span id="val_attack">50</span></label><br/>
+            <input type="range" name="attack" min="0" max="270" value="50" step="1" style="width:100%"/>
+        </div>
+        <div style="margin-top:8px;">
+            <label>Defense: <span id="val_defense">50</span></label><br/>
+            <input type="range" name="defense" min="0" max="270" value="50" step="1" style="width:100%"/>
+        </div>
+        <div style="margin-top:8px;">
+            <label>Magic: <span id="val_magic">50</span></label><br/>
+            <input type="range" name="magic" min="0" max="270" value="50" step="1" style="width:100%"/>
+        </div>
     </div>
 
-    <label>Magic:</label>
-    <input type="number" th:field="*{magic}" value="0" min="0" /><br/>
+    <!-- Level is fixed at 1 (unchangeable) -->
+    <div>
+        <label>Level:</label>
+        <input type="number" value="1" min="1" readonly disabled />
+        <input type="hidden" th:field="*{level}" value="1" />
+    </div>
+
     <label>Mana:</label>
     <input type="number" th:field="*{mana}" value="100" min="0" /><br/>
+
+    <!-- Magic Spells -->
+    <fieldset style="margin-top:10px;">
+        <legend>Magic Spells</legend>
+        <div style="margin-bottom:6px;">Choose learned spells:</div>
+        <label style="margin-right:10px;"><input type="checkbox" class="spellOpt" value="Fireball"> Fireball</label>
+        <label style="margin-right:10px;"><input type="checkbox" class="spellOpt" value="Heal"> Heal</label>
+        <label style="margin-right:10px;"><input type="checkbox" class="spellOpt" value="Lightning"> Lightning</label>
+        <input type="hidden" th:field="*{spells}" id="spellsCsv" />
+        <div style="margin-top:10px;">
+            <label>Equipped Spell:</label>
+            <select th:field="*{equippedSpell}" id="equippedSpell">
+                <option value="">None</option>
+            </select>
+        </div>
+        <small style="color:#888;">Tip: Equip a spell to cast it in-game (press Q). You can cycle spells with C.</small>
+    </fieldset>
 
     <label>Skills:</label>
     <input type="text" th:field="*{skills}"  /><br/>
 
-    <label>Gold:</label>
-    <input type="number" th:field="*{gold}" value="100" /><br/>
+    <div>
+        <label>Starting Gold:</label>
+        <input type="number" value="100" disabled readonly />
+        <small>(Fixed default)</small>
+    </div>
     <label>Armor (rating):</label>
     <input type="number" th:field="*{armor}" value="0" /><br/>
+    <label>Class:</label>
+    <select th:field="*{charClass}">
+        <option value="Barbarian">Barbarian</option>
+        <option value="Wizard">Wizard</option>
+        <option value="Archer">Archer</option>
+    </select><br/>
+
     <label>Weapon:</label>
     <select th:field="*{weapon}">
         <option value="Sword">Sword</option>
         <option value="Mace">Mace</option>
         <option value="Axe">Axe</option>
         <option value="Scythe">Scythe</option>
+        <option value="Bow">Bow</option>
+        <option value="Staff">Staff</option>
     </select><br/>
 
     <!-- Appearance customization -->
@@ -73,32 +113,51 @@
 <script src="/js/character_preview.js"></script>
 <script>
 (function(){
-  const limit = 300;
+  // Slider-based allocator: total pool 270; defaults 50 each; remaining starts at 70.
+  const LIMIT = 270;
+  const fields = ['health','attack','defense','magic'];
+  const spans = {
+    health: document.getElementById('val_health'),
+    attack: document.getElementById('val_attack'),
+    defense: document.getElementById('val_defense'),
+    magic: document.getElementById('val_magic')
+  };
   const leftEl = document.getElementById('ptsLeft');
   function el(name){ return document.querySelector('[name="'+name+'"]'); }
-  const fields = ['health','attack','defense','magic'];
-  function clamp(){
-    let sum = 0;
-    fields.forEach(n=>{ const v = parseInt(el(n)?.value||'0',10); if(!isNaN(v)) sum += v; });
-    const left = Math.max(0, limit - sum);
-    leftEl.textContent = String(left);
-    if(sum > limit){
-      // Reduce the last edited field to fit within the limit
-      document.activeElement && (function(){
-        const n = document.activeElement.getAttribute('name');
-        if(fields.includes(n)){
-          const over = sum - limit;
-          const cur = parseInt(document.activeElement.value||'0',10);
-          document.activeElement.value = Math.max(0, cur - over);
-        }
-      })();
-      // recalc
-      let sum2=0; fields.forEach(n=>{ const v=parseInt(el(n)?.value||'0',10); if(!isNaN(v)) sum2+=v; });
-      leftEl.textContent = String(Math.max(0, limit - sum2));
-    }
+  function sumAll(){ let s=0; fields.forEach(n=>{ const v=parseInt(el(n)?.value||'0',10); if(!isNaN(v)) s+=v; }); return s; }
+  function updateSpans(){ fields.forEach(n=>{ const v=parseInt(el(n)?.value||'0',10); if(spans[n]) spans[n].textContent = isNaN(v)?'0':String(v); }); }
+  function clampLastActive(over){
+    if(!document.activeElement) return;
+    const n = document.activeElement.getAttribute('name');
+    if(!fields.includes(n)) return;
+    const cur = parseInt(document.activeElement.value||'0',10) || 0;
+    document.activeElement.value = Math.max(0, cur - over);
   }
-  fields.forEach(n=>{ const e=el(n); if(e){ e.addEventListener('input', clamp); }});
-  clamp();
+  function onInput(){
+    let s = sumAll();
+    if(s > LIMIT){ clampLastActive(s - LIMIT); s = sumAll(); }
+    leftEl.textContent = String(Math.max(0, LIMIT - s));
+    updateSpans();
+  }
+  fields.forEach(n=>{ const e=el(n); if(e){ e.addEventListener('input', onInput); }});
+  onInput();
+
+  // Spells selector logic: update hidden CSV and equipped select
+  const checks = Array.from(document.querySelectorAll('.spellOpt'));
+  const hidden = document.getElementById('spellsCsv');
+  const equipSel = document.getElementById('equippedSpell');
+  function rebuildEquippedOptions(){
+    const selected = checks.filter(c=> c.checked).map(c=> c.value);
+    // Update hidden CSV
+    hidden.value = selected.join(',');
+    // Rebuild options except the first (None)
+    const current = equipSel.value;
+    for(let i=equipSel.options.length-1;i>=1;i--){ equipSel.remove(i); }
+    selected.forEach(sp=>{ const o=document.createElement('option'); o.value=sp; o.textContent=sp; equipSel.appendChild(o); });
+    if(selected.includes(current)) equipSel.value = current; else if(selected.length){ equipSel.value = selected[0]; } else { equipSel.value = ''; }
+  }
+  checks.forEach(c=> c.addEventListener('change', rebuildEquippedOptions));
+  rebuildEquippedOptions();
 })();
 </script>
 <script src="/js/home.js"></script>

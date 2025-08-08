@@ -113,7 +113,15 @@
     player.position.x = Math.max(-55, Math.min(55, player.position.x));
     player.position.z = Math.max(-55, Math.min(55, player.position.z));
 
-    camera.position.set(player.position.x - Math.sin(yaw)*2.5, player.position.y + 0.6, player.position.z - Math.cos(yaw)*2.5);
+    // Rotate player to face yaw and move camera using pitch-aware boom
+    player.rotation.y = yaw;
+    const r = 2.5;
+    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    camera.position.set(
+      player.position.x - Math.sin(yaw)*cp*r,
+      player.position.y + 0.6 + sp*r*0.8,
+      player.position.z - Math.cos(yaw)*cp*r
+    );
     camera.lookAt(player.position.x, player.position.y+0.5, player.position.z);
 
     // Interactions

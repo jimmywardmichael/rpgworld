@@ -42,10 +42,15 @@
     const skin = val('skinColor', '#ffddaa');
     const shirt = val('shirtColor', '#6699ff');
     const pants = val('pantsColor', '#333333');
-    // apply
+    const klass = (val('charClass','Adventurer')||'').toLowerCase();
+    // apply base colors
     head.material.color.set(new THREE.Color(skin));
     torso.material.color.set(new THREE.Color(shirt));
     legs.material.color.set(new THREE.Color(pants));
+    // simple class hint by tinting torso if unset
+    if(klass==='wizard') torso.material.color.set(new THREE.Color('#3344cc'));
+    if(klass==='barbarian') torso.material.color.set(new THREE.Color('#8b4513'));
+    if(klass==='archer') torso.material.color.set(new THREE.Color('#556b2f'));
   }
 
   function spin(){ group.rotation.y += 0.01; }
