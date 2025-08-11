@@ -84,7 +84,7 @@ public class GameCharacter {
     public void setSkinColor(String skinColor) { this.skinColor = skinColor; }
 
     public String getShirtColor() { return shirtColor; }
-    public void setShirtColor(String shirtColor) { this.shirtColor = this.shirtColor = shirtColor; }
+    public void setShirtColor(String shirtColor) { this.shirtColor = shirtColor; }
 
     public String getPantsColor() { return pantsColor; }
     public void setPantsColor(String pantsColor) { this.pantsColor = pantsColor; }

@@ -44,11 +44,6 @@ public class CharacterController {
                 .body(ch);
     }
 
-    @GetMapping("/characters")
-    public String showCharacters(Model model) {
-        model.addAttribute("characters", characterRepository.findAll());
-        return "characters";
-    }
 
 
     @GetMapping
@@ -119,7 +114,7 @@ public class CharacterController {
         ch.setInventory(inv);
         // apply immediate effects
         if("Potion".equals(item)){
-            int newHp = Math.min(ch.getHealth(), ch.getHealth()); // placeholder: potions apply in-game client; keep server neutral
+            // No immediate server-side effect; client applies potion effects in-game
         } else if("Shield".equals(item)){
             ch.setArmor(ch.getArmor()+5);
         } else if("Armor".equals(item)){
@@ -158,13 +153,19 @@ public class CharacterController {
         if(ch==null) return new ApiResponse(false, "Character not found", null);
         if(req==null) return new ApiResponse(false, "No state provided", ch);
         // Only update provided fields
-        if(req.health!=null) ch.setHealth(req.health);
-        if(req.maxHealth!=null) { ch.setHealth(Math.min(req.health!=null?req.health:ch.getHealth(), req.maxHealth)); }
+        // Compute target health and clamp by provided maxHealth (we don't persist maxHealth on the server)
+        Integer targetHealth = (req.health != null) ? req.health : ch.getHealth();
+        if (req.maxHealth != null && targetHealth != null) {
+            targetHealth = Math.min(targetHealth, req.maxHealth);
+        }
+        if (targetHealth != null) {
+            ch.setHealth(targetHealth);
+        }
         if(req.armor!=null) ch.setArmor(req.armor);
         if(req.gold!=null) ch.setGold(req.gold);
-        // Prevent regression due to out-of-order saves: only increase level/xp
-        if(req.level!=null && req.level >= ch.getLevel()) ch.setLevel(req.level);
-        if(req.xp!=null && req.xp >= ch.getXp()) ch.setXp(req.xp);
+        // Allow decreases for level/xp (e.g., on death)
+        if(req.level!=null) ch.setLevel(req.level);
+        if(req.xp!=null) ch.setXp(req.xp);
         if(req.attack!=null) ch.setAttack(req.attack);
         if(req.defense!=null) ch.setDefense(req.defense);
         if(req.magic!=null) ch.setMagic(req.magic);

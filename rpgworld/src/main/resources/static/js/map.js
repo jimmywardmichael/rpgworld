@@ -404,6 +404,8 @@
   }
   window.addEventListener('beforeunload', autosaveOnUnload);
   window.addEventListener('pagehide', autosaveOnUnload);
+  // Also save when tab becomes hidden/backgrounded (best effort)
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden'){ autosaveOnUnload(); } });
 
   function enterStore(){
     inStore = true; buildStoreInterior();
